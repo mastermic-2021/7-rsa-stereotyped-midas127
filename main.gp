@@ -30,3 +30,28 @@ change_password(user,modulus,e=7) = {
     print("[OK] changed password for user ",user);
   ,E,print("[ERROR] ",E));
 }
+
+encode(m) = {
+	fromdigits(Vec(Vecsmall(m)),128);
+}
+
+decode(c) = {
+	  Strchr(digits(c,128));
+}
+
+inp = readvec("input.txt");
+chiffre = inp[2];
+n = inp[1][1];
+e = inp[1][2];
+
+X = 128^10;
+
+partiedebut = Vec(Vecsmall("Cher collaborateur, votre nouveau mot de passe est "));
+partiefin = Vec(Vecsmall(". Merci de votre comprehension, le service informatique."));
+
+m_test = concat(concat(partiedebut, Vec(0, 10)), partiefin);
+
+m_num = fromdigits(Vec(m_test), 128);
+
+message = zncoppersmith((m_num + 128^56*x)^e - chiffre, n, X);
+print(Strprintf(template, decode(message[1])));
